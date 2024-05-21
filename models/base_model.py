@@ -38,7 +38,7 @@ class BaseModel:
 
         """
         self.updated_at = datetime.utcnow()
-        models.storage.save()
+        models.storage.save(self)
 
     def to_dict(self):
         """
