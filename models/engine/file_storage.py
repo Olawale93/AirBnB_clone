@@ -1,8 +1,9 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 
 import json
 import os
-from models.base_models import BaseModel
+import codecs
+from models.base_model import BaseModel
 
 
 class FileStorage:
@@ -29,26 +30,26 @@ class FileStorage:
         """
         return FileStorage.__objects
 
-    def save(self):
+    def save(self, obj):
         """
 
+
         """
-        all_objs = FileStorage.__objects
-
-        obj_dict = {}
-
-        for obj in all_objs.keys():
-            obj_dict[obj] = all_objs[obj].to_dict
-
+        obj_dict = obj.to_dict()
+        serializable_dict = {}
+        for key, value in obj_dict.items():
+            if not callable(value):
+                serializable_dict[key] = value
             with open(FileStorage.__file_path, "w", encoding="utf-8") as file:
-                json.dump(obj_dict, file)
+                json.dump(serializable_dict, file)
 
     def reload(self):
         """
 
         """
         if os.path.isfile(FileStorage.__file_path):
-            with open(FileStorage.__file_path), "r", encoding="utf-8") as file:
+            with codecs.open(FileStorage.__file_path, "r", encoding="utf-8") as file:
+
                 try:
                     obj_dict = json.load(file)
 
@@ -61,6 +62,5 @@ class FileStorage:
                         instance = cls(**args)
 
                         FileStorage.__objects[key] = instance
-                except
-                Exception:
+                except Exception:
                     pass
